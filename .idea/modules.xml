@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/meodeono-mesage-webhook.iml" filepath="$PROJECT_DIR$/.idea/modules/meodeono-mesage-webhook.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/meodeono-mesage-webhook_main.iml" filepath="$PROJECT_DIR$/.idea/modules/meodeono-mesage-webhook_main.iml" group="meodeono-mesage-webhook" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/meodeono-mesage-webhook_test.iml" filepath="$PROJECT_DIR$/.idea/modules/meodeono-mesage-webhook_test.iml" group="meodeono-mesage-webhook" />
     </modules>
   </component>
 </project>
