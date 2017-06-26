@@ -1,6 +1,5 @@
 package vertx
 
-import groovy.util.logging.Slf4j
 import io.vertx.core.AsyncResult
 import io.vertx.core.Handler
 import io.vertx.core.http.HttpServer
@@ -10,7 +9,7 @@ import io.vertx.ext.web.Router
 /**
  * Created by Khanhdb@eway.vn on 6/25/17.
  */
-@Slf4j
+
 abstract class VertxServer <C extends VertxConfig> {
 
     @Delegate
@@ -33,7 +32,7 @@ abstract class VertxServer <C extends VertxConfig> {
        httpServer.requestHandler(router.&accept).listen(config.httpPort, {event ->
            listenHandler?.handle(event)
            if (event.succeeded()) {
-               log.info("VertxServer started at http://127.0.0.1:${httpServer.actualPort()}")
+            println("VertxServer started at http://127.0.0.1:${httpServer.actualPort()}")
            } else {
                stop()
                throw new RuntimeException("Unable to start VertxServer at http://127.0.0.1:${httpServer.actualPort()}")

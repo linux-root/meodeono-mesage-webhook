@@ -1,5 +1,6 @@
 package vertx
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import io.vertx.core.Vertx
 
 /**
@@ -7,6 +8,7 @@ import io.vertx.core.Vertx
  */
 class VertxConfig {
 
+    @JsonProperty('http.port')
     int httpPort
     Vertx vertx = Vertx.vertx()
 }
