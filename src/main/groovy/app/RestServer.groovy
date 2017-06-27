@@ -1,8 +1,11 @@
 package app
 
-import controller.GET_MessageTransporter
+import controller.POST_MessageTransporter
+import controller.GET_VerifyWebhook
 import groovy.transform.InheritConstructors
 import io.vertx.ext.web.Route
+import io.vertx.ext.web.handler.BodyHandler
+import io.vertx.ext.web.handler.CookieHandler
 import io.vertx.ext.web.handler.CorsHandler
 import vertx.VertxServer
 
@@ -27,7 +30,14 @@ class RestServer extends VertxServer<AppConfig>{
             allowedMethods([OPTIONS, GET, POST, PUT, DELETE, PATCH] as Set)
             allowedHeaders(["Authorization", "Content-Type"] as Set)
         })
-        get('/test') >> GET_MessageTransporter
+
+
+        route().handler(BodyHandler.create()) //khong co cai nay se khong co body trong request
+        route().handler(CookieHandler.create()) //khong co cai nay se khong co cookies trong request
+
+
+        post('/test') >> POST_MessageTransporter
+        get('/test') >> GET_VerifyWebhook
 
     }
 }

@@ -11,12 +11,13 @@ import io.vertx.core.http.HttpMethod
 import io.vertx.core.http.HttpServerRequest
 import io.vertx.core.http.HttpServerResponse
 import io.vertx.ext.web.RoutingContext
+import model.Message
 import org.apache.commons.lang3.Validate
 
 /**
  * Created by chipn@eway.vn on 2/4/17.
  */
-@CompileStatic
+
 abstract class VertxController<C extends VertxConfig> implements Handler<RoutingContext> {
 
     protected C config
@@ -112,5 +113,18 @@ abstract class VertxController<C extends VertxConfig> implements Handler<Routing
 
         def bytes = mapper.writeValueAsBytes(object)
         response.end(Buffer.buffer(bytes))
+    }
+    Message parseMessage(RoutingContext context){
+        def body = parseJson(context)
+        def entry = body.get('entry')
+        def mapMessage = entry.get(0)
+        Message m = new Message(
+                id: mapMessage.get('id'),
+                time: mapMessage.get('time'),
+                sender: mapMessage.get('messaging').get(0).get('sender').get('id'),
+                recipient: mapMessage.get('messaging').get(0).get('recipient').get('id'),
+                message: mapMessage.get('messaging').get(0).get('message').get('text')
+        )
+        return m
     }
 }
