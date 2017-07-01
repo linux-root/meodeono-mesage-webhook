@@ -4,9 +4,11 @@ import app.AppConfig
 import groovy.transform.InheritConstructors
 import io.vertx.core.http.HttpServerRequest
 import io.vertx.core.http.HttpServerResponse
-import io.vertx.core.json.JsonObject
 import io.vertx.ext.web.RoutingContext
+import model.ReceivedMessage
+import model.SentMessage
 import okhttp3.*
+import org.apache.commons.lang3.Validate
 import vertx.VertxController
 
 /**
@@ -15,7 +17,6 @@ import vertx.VertxController
 @InheritConstructors
 class POST_MessageTransporter extends VertxController<AppConfig>{
 
-    static final ACCESS_TOKEN = "EAAYmqgM3dSUBAA1DYF94arInGTSEcmLAuKHbhAw3tjXgc0B2iC8ZAGUiOb8aSZBk9Sgl6GQ8eu9P1vHaKzVYeyCRBLholHK88vmkEKkIITHZB6W9s5Nr6eMUUhvYk8lHhq4VWS7qm1ZBngYZCmDV2GR3zSv2V6yVktJVvPGD6dG8xLovM9p0cTJrMAh2ZBZAgATq85gtT7y0AZDZD"
     @Override
     void validate(RoutingContext context) {
 
@@ -23,27 +24,27 @@ class POST_MessageTransporter extends VertxController<AppConfig>{
 
     @Override
     void handle(RoutingContext context, HttpServerRequest request, HttpServerResponse response) {
-        def message = parseMessage(context)
+        def message = ReceivedMessage.newInstance(context)
         response.setStatusCode(200)
-        def id = new JsonObject().put('id', message.sender)
-        def reply = new JsonObject().put('text', message.message)
-        def m = new JsonObject().put('recipient', id).put('message', reply)
-        sendMessage(m)
+        def m = new SentMessage(message: message.message, recipient: message.sender)
+        sendMessage(m, config.pageAccessToken)
         response.end()
     }
 
-    static void sendMessage(JsonObject message) {
+    static sendMessage(SentMessage sentMessage, String ACCESS_TOKEN) {
+        Validate.notNull(sentMessage, 'Message must be not null')
         def constantURL = "https://graph.facebook.com/v2.9/me/messages"
-        def access_token = "?access_token=${ACCESS_TOKEN}"
+        def access_token_param = "?access_token=${ACCESS_TOKEN}"
 
         OkHttpClient httpClient = new OkHttpClient()
         MediaType JSON = MediaType.parse("application/json; charset=utf-8")
-        RequestBody body = RequestBody.create(JSON, message.toString())
+        RequestBody body = RequestBody.create(JSON, sentMessage.toJson().toString())
         Request request = new Request.Builder()
-                          .url(constantURL + access_token)
-                          .post(body)
-                          .build()
+                .url(constantURL + access_token_param)
+                .post(body)
+                .build()
+        //retry....
         Response response = httpClient.newCall(request).execute()
-        JsonObject object = new JsonObject(response.body().string())
+        println 'hl'
     }
 }

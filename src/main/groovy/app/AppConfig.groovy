@@ -1,5 +1,6 @@
 package app
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.PropertyNamingStrategy
@@ -13,6 +14,9 @@ import vertx.VertxConfig
  */
 @Slf4j
 class AppConfig extends VertxConfig {
+
+    @JsonProperty('page_access_token')
+    String pageAccessToken
 
     static AppConfig newInstance(File appConfigFile) throws IOException {
         Validate.isTrue(appConfigFile.exists(), "AppConfigFile not exists: ${appConfigFile.getAbsolutePath()}")

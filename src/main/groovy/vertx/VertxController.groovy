@@ -12,6 +12,12 @@ import io.vertx.core.http.HttpServerRequest
 import io.vertx.core.http.HttpServerResponse
 import io.vertx.ext.web.RoutingContext
 import model.Message
+import model.SentMessage
+import okhttp3.MediaType
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody
+import okhttp3.Response
 import org.apache.commons.lang3.Validate
 
 /**
@@ -114,17 +120,5 @@ abstract class VertxController<C extends VertxConfig> implements Handler<Routing
         def bytes = mapper.writeValueAsBytes(object)
         response.end(Buffer.buffer(bytes))
     }
-    Message parseMessage(RoutingContext context){
-        def body = parseJson(context)
-        def entry = body.get('entry')
-        def mapMessage = entry.get(0)
-        Message m = new Message(
-                id: mapMessage.get('id'),
-                time: mapMessage.get('time'),
-                sender: mapMessage.get('messaging').get(0).get('sender').get('id'),
-                recipient: mapMessage.get('messaging').get(0).get('recipient').get('id'),
-                message: mapMessage.get('messaging').get(0).get('message').get('text')
-        )
-        return m
-    }
+
 }
